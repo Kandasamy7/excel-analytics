@@ -60,3 +60,9 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: err.message })
     }
 }
+// Get user profile
+exports.getMe = async (req, res) => {
+  const user = req.user // This is set by the authMiddleware
+  if (!user) return res.status(401).json({ message: 'User not found' })
+  res.status(200).json(user)
+}
