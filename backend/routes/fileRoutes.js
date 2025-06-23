@@ -1,7 +1,7 @@
 const express = require('express')
 const multer = require('multer')
 const protect = require('../middleware/authMiddleware')
-const { uploadExcel } = require('../controllers/fileController')
+const { uploadExcel,getUploadHistory,getFileData } = require('../controllers/fileController')
 
 const router = express.Router()
 const storage = multer.memoryStorage()
@@ -12,6 +12,8 @@ router.get('/test', protect, (req, res) => {
     user: req.user
   })
 })
+router.get('/history', protect, getUploadHistory)
+router.get('/data/:id', protect, getFileData)
 
 router.post('/upload', protect, upload.single('file'), uploadExcel)
 
