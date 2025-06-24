@@ -1,3 +1,4 @@
+// Middleware to protect routes by checking for a valid JWT token
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 
@@ -10,13 +11,13 @@ const protect = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
       req.user = await User.findById(decoded.id).select('-password')
-      return next()  // ✅ move on to next middleware
+      return next()  // move on to next middleware
     } catch (error) {
-      return res.status(401).json({ message: 'Not authorized, token failed' }) // ✅ stop here
+      return res.status(401).json({ message: 'Not authorized, token failed' }) 
     }
   }
 
-  // ✅ stop here if no token
+  
   return res.status(401).json({ message: 'Not authorized, no token' })
 }
 

@@ -8,7 +8,7 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage })
 router.get('/test', protect, (req, res) => {
   res.json({
-    message: 'Token is valid ✅',
+    message: 'Token is valid and user is authenticated',
     user: req.user
   })
 })

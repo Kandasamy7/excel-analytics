@@ -1,3 +1,4 @@
+//Authentication controller for user registration, login, and profile retrieval
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs') // password hashing
 const User = require('../models/User') 

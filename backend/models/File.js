@@ -1,3 +1,4 @@
+// This file defines the Mongoose schema for the file model
 const mongoose = require('mongoose');
 const fileSchema = new mongoose.Schema({
     user: {
