@@ -1,7 +1,8 @@
-
 const XLSX = require('xlsx')
 const File = require('../models/File')
+const User = require('../models/User')
 
+// Upload and parse Excel file
 exports.uploadExcel = async (req, res) => {
   try {
     if (!req.file) {
@@ -15,7 +16,7 @@ exports.uploadExcel = async (req, res) => {
     const newFile = new File({
       user: req.user._id,
       originalName: req.file.originalname,
-      data: data,
+      data
     })
 
     await newFile.save()
@@ -23,25 +24,21 @@ exports.uploadExcel = async (req, res) => {
     res.status(200).json({
       message: 'File uploaded & parsed successfully',
       rows: data.length,
-      dataPreview: data.slice(0, 5),
+      dataPreview: data.slice(0, 5)
     })
   } catch (err) {
-    console.error(err)
+    console.error('Upload failed:', err)
     res.status(500).json({ message: 'Upload failed', error: err.message })
   }
 }
 
+// Get list of uploaded files for user
 exports.getUploadHistory = async (req, res) => {
   try {
-    // console.log(' Getting upload history for:', req.user._id) / Debugging line to check user id
-
     const files = await File.find({ user: req.user._id })
       .select('originalName createdAt')
       .sort({ createdAt: -1 })
 
-    // console.log(' Found files:', files) //Debugging line to check found files
-
-    // Send a clean, trimmed-down response
     res.status(200).json({
       files: files.map(file => ({
         id: file._id,
@@ -54,26 +51,41 @@ exports.getUploadHistory = async (req, res) => {
     res.status(500).json({ message: 'Failed to get upload history' })
   }
 }
+
+// Get file content for chart
 exports.getFileData = async (req, res) => {
   try {
-    const file = await File.findOne({
-      _id: req.params.id,
-      user: req.user._id
-    })
-    if(!file) {
-      return res.status(404).json({message: 'File not found'})
+    const { id } = req.params
+    if (!id || id === 'undefined') {
+      return res.status(400).json({ message: 'Invalid file ID' })
     }
-    const columns = Object.keys(file.data[0] || {}) // Get the column names from the first row of data
+
+    const file = req.user.role === 'admin'
+     ? await File.findById(id).populate('user', 'email') : await File.findOne({ _id: id, user: req.user._id})
+
+    if (!file) {
+      return res.status(404).json({ message: 'File not found' })
+    }
+
+    const columns = Object.keys(file.data[0] || {})// Get column names from the first row
 
     res.status(200).json({
       name: file.originalName,
-      columns:columns,
+      columns,
       rows: file.data
     })
   } catch (error) {
-      console.log("chart data error", error);
-      res.status(500).json({message: 'failed to get file'});
-      
+    console.error('Chart data error:', error)
+    res.status(500).json({ message: 'Failed to get file' })
   }
 }
-
+// //get all uploaded files fro admin
+// exports.getAllUploadedFiles = async (req, res) => {
+//   try {
+//     const files = await file.find().populate('user','email')
+//     res.status(200).json(files)
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'server error'})
+//   }
+// }
