@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 
 // Middleware to protect routes by checking for a valid JWT token
-const protect = async (req, res, next) => {
+exports.protect = async (req, res, next) => {
   let token
 
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -29,4 +29,3 @@ const protect = async (req, res, next) => {
   return res.status(401).json({ message: 'Not authorized, no token' })
 }
 
-module.exports = protect
