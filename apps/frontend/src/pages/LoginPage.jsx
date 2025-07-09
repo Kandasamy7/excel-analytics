@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { loginUser } from '../services/api'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 
 export default function LoginPage() {
@@ -74,7 +74,7 @@ export default function LoginPage() {
         </button>
 
         <p className="text-center text-sm text-gray-500">
-          Don’t have an account? <a href="/register" className="text-indigo-600 hover:underline">Register</a>
+          Don’t have an account? <Link to="/register" className="text-indigo-600 hover:underline">Register</Link>
         </p>
       </form>
     </div>
