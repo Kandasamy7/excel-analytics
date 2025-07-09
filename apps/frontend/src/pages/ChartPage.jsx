@@ -85,6 +85,8 @@ const ChartPage = () => {
         ),
         borderColor: 'rgba(0,0,0,0.1)',
         borderWidth: 1,
+        borderRadius: 8,
+        hoverBackgroundColor: '#6366F1'
       }]
     }
   }
@@ -93,6 +95,7 @@ const ChartPage = () => {
     data: generateChartData(),
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { position: 'top' },
         title: {
@@ -210,12 +213,17 @@ const ChartPage = () => {
       </div>
 
       {xAxisColumn && yAxisColumn && generateChartData() && (
-        <div id="chart-area" className="bg-white p-4 rounded shadow">
+        <div
+          id="chart-area"
+          className="bg-white p-3 rounded shadow mx-auto overflow-hidden"
+          style={{ maxWidth: '600px', height: '400px' }}
+        >
           <Chart
             ref={chartRef}
             type={chartType}
             data={chartProps.data}
             options={chartProps.options}
+            style={{ width: '100%', height: '100%' }}
           />
         </div>
       )}
